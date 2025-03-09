@@ -168,7 +168,7 @@ abstract contract TokenRouter is GasRouter {
         // TODO (Maanav): How do we prevent DOS if someone provides invalid metadata?
         // If metadata provided, deposit tokens into the recipient app contract
         if (metadata.length > 0) {
-            address user = abi.decode(metadata, (address));
+            address user = bytes32(metadata[0:32]).bytes32ToAddress();
             IDepositReceiver(recipient.bytes32ToAddress()).depositFromBridge(user, amount);
         }
         emit ReceivedTransferRemote(_origin, recipient, amount);

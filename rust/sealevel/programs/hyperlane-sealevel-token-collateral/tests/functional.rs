@@ -644,6 +644,7 @@ async fn test_transfer_remote(spl_token_program_id: Pubkey) {
     let remote_transfer_amount =
         convert_decimals(transfer_amount.into(), LOCAL_DECIMALS, REMOTE_DECIMALS).unwrap();
 
+    let user_address = H256::random();
     let recent_blockhash = banks_client.get_latest_blockhash().await.unwrap();
     let transaction = Transaction::new_signed_with_payer(
         &[Instruction::new_with_bytes(
@@ -652,7 +653,7 @@ async fn test_transfer_remote(spl_token_program_id: Pubkey) {
                 destination_domain: REMOTE_DOMAIN,
                 recipient: remote_token_recipient,
                 amount_or_id: transfer_amount.into(),
-                metadata: vec![],
+                metadata: user_address.to_vec(),
             })
             .encode()
             .unwrap(),
@@ -746,7 +747,7 @@ async fn test_transfer_remote(spl_token_program_id: Pubkey) {
         destination: REMOTE_DOMAIN,
         recipient: remote_router,
         // Expect the remote_transfer_amount to be in the message.
-        body: TokenMessage::new(remote_token_recipient, remote_transfer_amount, vec![]).to_vec(),
+        body: TokenMessage::new(remote_token_recipient, remote_transfer_amount, user_address.to_vec()).to_vec(),
     };
 
     assert_eq!(
