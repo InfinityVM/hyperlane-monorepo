@@ -165,6 +165,7 @@ abstract contract TokenRouter is GasRouter {
         uint256 amount = _message.amount();
         bytes calldata metadata = _message.metadata();
         _transferTo(recipient.bytes32ToAddress(), amount, metadata);
+        // TODO (Maanav): How do we prevent DOS if someone provides invalid metadata?
         // If metadata provided, deposit tokens into the recipient app contract
         if (metadata.length > 0) {
             address user = bytes32(metadata[0:32]).bytes32ToAddress();
